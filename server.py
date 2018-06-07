@@ -74,8 +74,14 @@ def index():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method =='POST':
-        submitted_file = request.data
-        print(submitted_file)
+        submitted_file = request.files['sampleImage'].read()
+        print(request.form)
+        #print(list(request.form.keys())[0])
+        #print(request.form.get('sampleImage'))
+        #print(request.data)
+        #print(request.files)
+        print(request.files['sampleImage'])
+        #print(submitted_file)
         if submitted_file:
             ##############
             ### do prediction
@@ -83,6 +89,7 @@ def upload_file():
             preds = wrn168c10.get_prediction(submitted_file)
 
             #output = json.dumps(preds)
+            response.headers["Access-Control-Allow-Origin"] = "*"
             return jsonify(preds)
     else:       
         return render_template('error.html')
