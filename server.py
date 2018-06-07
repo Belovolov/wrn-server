@@ -74,37 +74,13 @@ def index():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method =='POST':
-        submitted_file = request.files['data_file']
+        submitted_file = request.data
         print(submitted_file)
         if submitted_file:
-            # get extension
-            file_extension = submitted_file.filename.rsplit('.', 1)[1].lower()
-            
-            # build path
-            path = os.path.join(uploadsfolder,time.strftime("%Y%m%d-%H%M%S") + '.' + file_extension)
-            
-            # save file
-            submitted_file.save(path)
-
             ##############
             ### do prediction
             ##############
-            preds = wrn168c10.get_prediction(path)
-            
-            ######################
-            ### move processed image
-            ######################
-
-            # move image now that it's been processed
-            path_new = path.replace("_uploads/unknown","_uploads_done")
-            print('moving processed image from:')
-            print(path)
-            print('to:')
-            print(path_new)
-            os.rename(path,path_new)
-
-            # output path to uploaded image (need to strip absolute portions of path)
-            image_path = "static/" + path_new.split("/static/")[1]
+            preds = wrn168c10.get_prediction(submitted_file)
 
             #output = json.dumps(preds)
             return jsonify(preds)

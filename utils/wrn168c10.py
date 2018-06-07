@@ -14,8 +14,9 @@ model = wrn.create_wide_residual_network(init_shape, nb_classes=10, N=2, k=8, dr
 model.load_weights("weights/WRN-16-8-Weights.h5")
 print("Model loaded.")
 
-def get_prediction(imagePath):
-    image = cv2.imread(imagePath)
+def get_prediction(imageData):
+    image = np.fromstring(imageData, np.uint8)
+    #image = cv2.imread(imagePath)
     
     arr = np.empty([1,32,32,3])
     arr[0] = image
