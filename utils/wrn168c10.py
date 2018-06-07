@@ -10,7 +10,7 @@ init_shape = (3, 32, 32) if K.image_dim_ordering() == 'th' else (32, 32, 3)
 
 # For WRN-16-8 put N = 2, k = 8
 model = wrn.create_wide_residual_network(init_shape, nb_classes=10, N=2, k=8, dropout=0.00)
-model.load_weights("weights/WRN-16-8 Weights.h5")
+model.load_weights("weights/WRN-16-8-Weights.h5")
 print("Model loaded.")
 
 def get_prediction(imagePath):
