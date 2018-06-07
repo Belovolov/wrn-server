@@ -82,6 +82,7 @@ def upload_file():
         #print(request.files)
         print(request.files['sampleImage'])
         #print(submitted_file)
+        print(submitted_file)
         if submitted_file:
             ##############
             ### do prediction
@@ -89,7 +90,8 @@ def upload_file():
             preds = wrn168c10.get_prediction(submitted_file)
 
             #output = json.dumps(preds)
-            response.headers["Access-Control-Allow-Origin"] = "*"
+            #response.headers["Access-Control-Allow-Origin"] = "*"
+            print(preds)
             return jsonify(preds)
     else:       
         return render_template('error.html')
