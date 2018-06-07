@@ -68,75 +68,46 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Return dash page
 @app.route('/')
 def index():
-    return render_template('Upload.html')
+    return jsonify({'status':'OK'})
 
 # POST IMAGE 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-
     if request.method =='POST':
-        return render_template('error.html')
-        # submitted_file = request.files['data_file']
-        # if submitted_file:
-        #     # get extension
-        #     file_extension = submitted_file.filename.rsplit('.', 1)[1].lower()
+        submitted_file = request.files['data_file']
+        print(submitted_file)
+        if submitted_file:
+            # get extension
+            file_extension = submitted_file.filename.rsplit('.', 1)[1].lower()
             
-        #     # build path
-        #     path = os.path.join(uploadsfolder,time.strftime("%Y%m%d-%H%M%S") + '.' + file_extension)
+            # build path
+            path = os.path.join(uploadsfolder,time.strftime("%Y%m%d-%H%M%S") + '.' + file_extension)
             
-        #     # save file
-        #     submitted_file.save(path)
+            # save file
+            submitted_file.save(path)
+
+            ##############
+            ### do prediction
+            ##############
+            preds = wrn168c10.get_prediction(path)
             
+            ######################
+            ### move processed image
+            ######################
 
-        #     ##############
-        #     ### do prediction
-        #     ##############
-        #     batches, preds = vgg.test(test_path, batch_size = batch_size*2)
+            # move image now that it's been processed
+            path_new = path.replace("_uploads/unknown","_uploads_done")
+            print('moving processed image from:')
+            print(path)
+            print('to:')
+            print(path_new)
+            os.rename(path,path_new)
 
-        #     #############
-        #     ### build output
-        #     #############
-            
-        #     # get filenames and index of this image
-        #     filenames = batches.filenames
-        #     filenames = [f.replace("unknown/","") for f in filenames]
-        #     #
-        #     splits = path.split("/")
-        #     fname = splits[len(splits) -1]
-        #     print('filename', fname)
-        #     print((" ; ").join(filenames))
-        #     #
-        #     f_idx = filenames.index(fname)
+            # output path to uploaded image (need to strip absolute portions of path)
+            image_path = "static/" + path_new.split("/static/")[1]
 
-        #     # round probabilities, convert to list, pull prediction for just this image
-        #     probs = np.round(preds,decimals = 4)*100
-        #     probslist = probs.tolist()
-        #     probs = probslist[f_idx]
-
-        #     ### create output object
-        #     output = {}
-        #     output['cat'] = probs[0]
-        #     output['dog'] = probs[1]
-
-
-        #     ######################
-        #     ### move processed image
-        #     ######################
-
-        #     # move image now that it's been processed
-        #     path_new = path.replace("_uploads/unknown","_uploads_done")
-        #     print('moving processed image from:')
-        #     print(path)
-        #     print('to:')
-        #     print(path_new)
-        #     os.rename(path,path_new)
-
-        #     # output path to uploaded image (need to strip absolute portions of path)
-        #     image_path = "static/" + path_new.split("/static/")[1]
-
-        #     output = json.dumps(output)
-
-        #     return render_template('result.html', dog = probs[1], cat=probs[0], image_path = image_path)
+            #output = json.dumps(preds)
+            return jsonify(preds)
     else:       
         return render_template('error.html')
 

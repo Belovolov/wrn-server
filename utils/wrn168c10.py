@@ -3,6 +3,7 @@ import numpy as np
 import wide_residual_network as wrn
 from keras.datasets import cifar10
 from keras import backend as K
+import cifarMeta
 
 img_rows, img_cols = 32, 32
 (trainX, trainY), (testX, testY) = cifar10.load_data()
@@ -22,18 +23,15 @@ def get_prediction(imagePath):
     trainX = np.concatenate(arr, trainX).astype('float32')
     trainX = (trainX - trainX.mean(axis=0)) / (trainX.std(axis=0))
     
-    yPreds = model.predict(trainX[0:1])
+    yPreds = model.predict(trainX[0:1]).round(2)
     yPred = np.argmax(yPreds, axis=1)
     #yPred = kutils.to_categorical(yPred)
     
-    return yPred[0]
-    # print(yPreds)
-    # print(yPred)
-    # print(trainY[0:20].flatten())
-    #print (testY - testX[3:100])
     
-    #yPreds2 = model.predict(arr2)
-    #yPred2 = np.argmax(yPreds2, axis=1)
-    #yPred2 = kutils.to_categorical(yPred2)
-    #print(yPreds2)
-    #print(yPred2)
+    result = {}
+    for i in range(0, len(yPreds[0])):
+        if (yPreds[0][i]>0):
+            result[cifarMeta.c10[i]]=yPreds[0][i]
+    topResults = [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)][0:5]
+    
+    return topResults
