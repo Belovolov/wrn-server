@@ -24,8 +24,8 @@ print('### start server ' + str(datetime.datetime.now()))
 sys.path.insert(1, os.path.join(sys.path[0], 'utils'))
                 
 #import the net
-import wrn168c10
-wrn = wrn168c10()
+from wrn168c10 import *
+wrn = Wrn168c10("weights/WRN-16-8-Weights.h5")
 
 # suppress warnings
 import warnings

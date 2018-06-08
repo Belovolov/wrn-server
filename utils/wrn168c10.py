@@ -6,7 +6,7 @@ from keras import backend as K
 import tensorflow as tf
 import cifarMeta
 
-class wrn168c10():
+class Wrn168c10():
     def __init__(self, weightsFile):
         (self.trainX, trainY), (testX, testY) = cifar10.load_data()
         init_shape = (3, 32, 32) if K.image_dim_ordering() == 'th' else (32, 32, 3)
@@ -33,7 +33,7 @@ class wrn168c10():
         for i in range(0, len(yPreds[0])):
             if (yPreds[0][i]>0):
                 result[cifarMeta.c10[i]]=str(yPreds[0][i])
-        topResults = [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
+        topResults = [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)][0:5]
         print(topResults)
         
-        return result
+        return topResults
