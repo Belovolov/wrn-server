@@ -39,8 +39,8 @@ app = Flask(__name__)
 # app config
 app.config['DEBUG'] = True
 
-app.static_folder = 'static/'
-app.static_url_path = 'static/'
+#app.static_folder = 'static/'
+#app.static_url_path = 'static/'
 
 ###################
 ### FLASK - ROUTES
