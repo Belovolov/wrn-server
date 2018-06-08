@@ -8,6 +8,7 @@
 
 # Flask
 from flask import Flask, render_template, make_response, request, Response, redirect, send_from_directory, jsonify
+from flask_cors import CORS
 
 # Flask Misc
 from flask import request
@@ -24,8 +25,8 @@ print('### start server ' + str(datetime.datetime.now()))
 sys.path.insert(1, os.path.join(sys.path[0], 'utils'))
                 
 #import the net
-import wrn168c10
-wrn = wrn168c10()
+from wrn168c10 import *
+predictor = get_wrn168c10predictor("weights/WRN-16-8-Weights.h5")
 
 # suppress warnings
 import warnings
@@ -35,6 +36,7 @@ warnings.filterwarnings('ignore')
 #### FLASK SETUP
 ##################
 app = Flask(__name__)
+CORS(app)
 
 # app config
 app.config['DEBUG'] = True
@@ -66,7 +68,7 @@ def upload_file():
         print(submitted_file)
         if submitted_file:
             ### do prediction
-            preds = wrn.get_prediction(submitted_file)
+            preds = predictor(submitted_file)
 
             #response.headers["Access-Control-Allow-Origin"] = "*"
             print(preds)
