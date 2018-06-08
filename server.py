@@ -24,7 +24,7 @@ print('### start server ' + str(datetime.datetime.now()))
 sys.path.insert(1, os.path.join(sys.path[0], 'utils'))
                 
 #import the net
-from wrn168c10 import *
+from wr_nets import *
 wrn = Wrn168c10("weights/WRN-16-8-Weights.h5")
 
 # suppress warnings
@@ -56,20 +56,9 @@ def index():
 def upload_file():
     if request.method =='POST':
         submitted_file = request.files['sampleImage'].read()
-        print(request.form)
-        #print(list(request.form.keys())[0])
-        #print(request.form.get('sampleImage'))
-        #print(request.data)
-        #print(request.files)
-        print(request.files['sampleImage'])
-        #print(submitted_file)
-        print(submitted_file)
         if submitted_file:
             ### do prediction
             preds = wrn.get_prediction(submitted_file)
-
-            #response.headers["Access-Control-Allow-Origin"] = "*"
-            print(preds)
             return jsonify(preds)
     else:       
         return render_template('error.html')
